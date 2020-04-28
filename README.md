@@ -1,1 +1,1 @@
-# php-sudoku-solver
+# A simple Sudoku puzzle solver in PHP 
