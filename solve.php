@@ -3,14 +3,14 @@
 echo PHP_EOL;
 
 if (empty($argv[1])) {
-	$file = __DIR__ . '/input-1.txt';
+    $file = __DIR__ . '/input-1.txt';
 } else {
-	$file = __DIR__ . '/' . $argv[1];
+    $file = __DIR__ . '/' . $argv[1];
 }
 
 if (!file_exists($file)) {
-	echo 'Input file "' . basename($file) . '" not found!' . PHP_EOL;
-	exit();
+    echo 'Input file "' . basename($file) . '" not found!' . PHP_EOL;
+    exit();
 }
 
 $input = file_get_contents($file);
@@ -54,43 +54,43 @@ function solve($input)
                     // remove possibilities from other groups if a value is restricted only in one col
                     // remove possibilities from other groups if a value is restricted only in one row
                     foreach ($solve[$i][$j] as $possibleVal) {
-                    	if (true) {
-							foreach (['row', 'col'] as $type) {
-								$removeValueFromFields = removeOptions($possibleVal, $solve, $i, $j, $type);
-								if (count($removeValueFromFields)) {
-									foreach ($removeValueFromFields as $key) {
-										list($rk, $ck) = explode('-', $key);
-										$solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
-									}
-								}
-							}
-						} elseif (false) {
-							foreach (['checkRow', 'checkColumn'] as $function) {
-								$removeValueFromFields = $function($possibleVal, $solve, $i, $j);
-								if (count($removeValueFromFields)) {
-									foreach ($removeValueFromFields as $key) {
-										list($rk, $ck) = explode('-', $key);
-										$solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
-									}
-								}
-							}
-						} else {
-							$removeValueFromFields = checkRow($possibleVal, $solve, $i, $j);
-							if (count($removeValueFromFields)) {
-								foreach ($removeValueFromFields as $key) {
-									list($rk, $ck) = explode('-', $key);
-									$solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
-								}
-							}
+                        if (true) {
+                            foreach (['row', 'col'] as $type) {
+                                $removeValueFromFields = removeOptions($possibleVal, $solve, $i, $j, $type);
+                                if (count($removeValueFromFields)) {
+                                    foreach ($removeValueFromFields as $key) {
+                                        list($rk, $ck) = explode('-', $key);
+                                        $solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
+                                    }
+                                }
+                            }
+                        } elseif (false) {
+                            foreach (['checkRow', 'checkColumn'] as $function) {
+                                $removeValueFromFields = $function($possibleVal, $solve, $i, $j);
+                                if (count($removeValueFromFields)) {
+                                    foreach ($removeValueFromFields as $key) {
+                                        list($rk, $ck) = explode('-', $key);
+                                        $solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
+                                    }
+                                }
+                            }
+                        } else {
+                            $removeValueFromFields = checkRow($possibleVal, $solve, $i, $j);
+                            if (count($removeValueFromFields)) {
+                                foreach ($removeValueFromFields as $key) {
+                                    list($rk, $ck) = explode('-', $key);
+                                    $solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
+                                }
+                            }
 
-							$removeValueFromFields = checkColumn($possibleVal, $solve, $i, $j);
-							if (count($removeValueFromFields)) {
-								foreach ($removeValueFromFields as $key) {
-									list($rk, $ck) = explode('-', $key);
-									$solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
-								}
-							}
-						}
+                            $removeValueFromFields = checkColumn($possibleVal, $solve, $i, $j);
+                            if (count($removeValueFromFields)) {
+                                foreach ($removeValueFromFields as $key) {
+                                    list($rk, $ck) = explode('-', $key);
+                                    $solve[$rk][$ck] = array_values(array_diff($solve[$rk][$ck], [$possibleVal]));
+                                }
+                            }
+                        }
                     }
 
                     // fill in if it is the only possibility in the group
@@ -128,172 +128,172 @@ function solve($input)
 
 function removeOptions($value, $grid, $rowKey, $colKey, $type = 'row')
 {
-	$removeValueFromKeys = [];
+    $removeValueFromKeys = [];
 
-	$pattern = "/^$rowKey-/";
-	if ($type == 'col') {
-		$pattern = "/-$colKey$/";
-	}
+    $pattern = "/^$rowKey-/";
+    if ($type == 'col') {
+        $pattern = "/-$colKey$/";
+    }
 
-	$$type = $total = 0;
-	foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
-		if (!is_array($cell) || !in_array($value, $cell)) {
-			continue;
-		}
+    $$type = $total = 0;
+    foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
+        if (!is_array($cell) || !in_array($value, $cell)) {
+            continue;
+        }
 
-		$total++;
+        $total++;
 
-		if (preg_match($pattern, $key)) {
-			$$type++;
-		}
-	}
+        if (preg_match($pattern, $key)) {
+            $$type++;
+        }
+    }
 
-	if ($$type == $total) {
-		$nextKeys = [];
+    if ($$type == $total) {
+        $nextKeys = [];
 
-		$key = $colKey;
-		if ($type == 'col') {
-			$key = $rowKey;
-		}
+        $key = $colKey;
+        if ($type == 'col') {
+            $key = $rowKey;
+        }
 
-		if ($key < 4) { // 1,2,3
-			$nextKeys[] = $key + 3;
-			$nextKeys[] = $key + 6;
-		} elseif ($key > 6) { // 7,8,9
-			$nextKeys[] = $key - 3;
-			$nextKeys[] = $key - 6;
-		} else { // 4,5,6
-			$nextKeys[] = $key - 3;
-			$nextKeys[] = $key + 6;
-		}
+        if ($key < 4) { // 1,2,3
+            $nextKeys[] = $key + 3;
+            $nextKeys[] = $key + 6;
+        } elseif ($key > 6) { // 7,8,9
+            $nextKeys[] = $key - 3;
+            $nextKeys[] = $key - 6;
+        } else { // 4,5,6
+            $nextKeys[] = $key - 3;
+            $nextKeys[] = $key + 6;
+        }
 
-		foreach ($nextKeys as $nextKey) {
-			$rowNextKey = $rowKey;
-			$colNextKey = $nextKey;
-			if ($type == 'col') {
-				$rowNextKey = $nextKey;
-				$colNextKey = $colKey;
-			}
-			foreach (getGroup($grid, $rowNextKey, $colNextKey) as $key => $cell) {
-				if (!is_array($cell) || !in_array($value, $cell)) {
-					continue;
-				}
+        foreach ($nextKeys as $nextKey) {
+            $rowNextKey = $rowKey;
+            $colNextKey = $nextKey;
+            if ($type == 'col') {
+                $rowNextKey = $nextKey;
+                $colNextKey = $colKey;
+            }
+            foreach (getGroup($grid, $rowNextKey, $colNextKey) as $key => $cell) {
+                if (!is_array($cell) || !in_array($value, $cell)) {
+                    continue;
+                }
 
-				if (preg_match($pattern, $key)) {
-					$removeValueFromKeys[] = $key;
-				}
-			}
-		}
-	}
+                if (preg_match($pattern, $key)) {
+                    $removeValueFromKeys[] = $key;
+                }
+            }
+        }
+    }
 
-	if (count($removeValueFromKeys) && SEE_ALL) {
-		echo PHP_EOL . 'Remove ' . $value . ' from (' . $type . ') keys:' . PHP_EOL;
-		print_r($removeValueFromKeys);
-	}
+    if (count($removeValueFromKeys) && SEE_ALL) {
+        echo PHP_EOL . 'Remove ' . $value . ' from (' . $type . ') keys:' . PHP_EOL;
+        print_r($removeValueFromKeys);
+    }
 
-	return $removeValueFromKeys;
+    return $removeValueFromKeys;
 }
 
 function checkRow($value, $grid, $rowKey, $colKey)
 {
-	$removeValueFromKeys = [];
+    $removeValueFromKeys = [];
 
-	$total = $inCol = 0;
-	foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
-		if (!is_array($cell) || !in_array($value, $cell)) {
-			continue;
-		}
+    $total = $inCol = 0;
+    foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
+        if (!is_array($cell) || !in_array($value, $cell)) {
+            continue;
+        }
 
-		$total++;
+        $total++;
 
-		if (preg_match("/^$rowKey-/", $key)) {
-			$inCol++;
-		}
-	}
+        if (preg_match("/^$rowKey-/", $key)) {
+            $inCol++;
+        }
+    }
 
-	if ($inCol == $total) {
-		$nextKeys = [];
-		if ($colKey < 4) { // 1,2,3
-			$nextKeys[] = $colKey + 3;
-			$nextKeys[] = $colKey + 6;
-		} elseif ($colKey > 6) { // 7,8,9
-			$nextKeys[] = $colKey - 3;
-			$nextKeys[] = $colKey - 6;
-		} else { // 4,5,6
-			$nextKeys[] = $colKey - 3;
-			$nextKeys[] = $colKey + 6;
-		}
+    if ($inCol == $total) {
+        $nextKeys = [];
+        if ($colKey < 4) { // 1,2,3
+            $nextKeys[] = $colKey + 3;
+            $nextKeys[] = $colKey + 6;
+        } elseif ($colKey > 6) { // 7,8,9
+            $nextKeys[] = $colKey - 3;
+            $nextKeys[] = $colKey - 6;
+        } else { // 4,5,6
+            $nextKeys[] = $colKey - 3;
+            $nextKeys[] = $colKey + 6;
+        }
 
-		foreach ($nextKeys as $nextKey) {
-			foreach (getGroup($grid, $rowKey, $nextKey) as $key => $cell) {
-				if (!is_array($cell) || !in_array($value, $cell)) {
-					continue;
-				}
+        foreach ($nextKeys as $nextKey) {
+            foreach (getGroup($grid, $rowKey, $nextKey) as $key => $cell) {
+                if (!is_array($cell) || !in_array($value, $cell)) {
+                    continue;
+                }
 
-				if (preg_match("/^$rowKey-/", $key)) {
-					$removeValueFromKeys[] = $key;
-				}
-			}
-		}
-	}
+                if (preg_match("/^$rowKey-/", $key)) {
+                    $removeValueFromKeys[] = $key;
+                }
+            }
+        }
+    }
 
-	if (count($removeValueFromKeys) && SEE_ALL) {
-		echo PHP_EOL . 'Remove ' . $value . ' from (row) keys:' . PHP_EOL;
-		print_r($removeValueFromKeys);
-	}
+    if (count($removeValueFromKeys) && SEE_ALL) {
+        echo PHP_EOL . 'Remove ' . $value . ' from (row) keys:' . PHP_EOL;
+        print_r($removeValueFromKeys);
+    }
 
-	return $removeValueFromKeys;
+    return $removeValueFromKeys;
 }
 
 function checkColumn($value, $grid, $rowKey, $colKey)
 {
-	$removeValueFromKeys = [];
+    $removeValueFromKeys = [];
 
-	$total = $inRow = 0;
-	foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
-		if (!is_array($cell) || !in_array($value, $cell)) {
-			continue;
-		}
+    $total = $inRow = 0;
+    foreach (getGroup($grid, $rowKey, $colKey) as $key => $cell) {
+        if (!is_array($cell) || !in_array($value, $cell)) {
+            continue;
+        }
 
-		$total++;
+        $total++;
 
-		if (preg_match("/-$colKey$/", $key)) {
-			$inRow++;
-		}
-	}
+        if (preg_match("/-$colKey$/", $key)) {
+            $inRow++;
+        }
+    }
 
-	if ($inRow == $total) {
-		$nextKeys = [];
-		if ($rowKey < 4) { // 1,2,3
-			$nextKeys[] = $rowKey + 3;
-			$nextKeys[] = $rowKey + 6;
-		} elseif ($rowKey > 6) { // 7,8,9
-			$nextKeys[] = $rowKey - 3;
-			$nextKeys[] = $rowKey - 6;
-		} else { // 4,5,6
-			$nextKeys[] = $rowKey - 3;
-			$nextKeys[] = $rowKey + 6;
-		}
+    if ($inRow == $total) {
+        $nextKeys = [];
+        if ($rowKey < 4) { // 1,2,3
+            $nextKeys[] = $rowKey + 3;
+            $nextKeys[] = $rowKey + 6;
+        } elseif ($rowKey > 6) { // 7,8,9
+            $nextKeys[] = $rowKey - 3;
+            $nextKeys[] = $rowKey - 6;
+        } else { // 4,5,6
+            $nextKeys[] = $rowKey - 3;
+            $nextKeys[] = $rowKey + 6;
+        }
 
-		foreach ($nextKeys as $nextKey) {
-			foreach (getGroup($grid, $nextKey, $colKey) as $key => $cell) {
-				if (!is_array($cell) || !in_array($value, $cell)) {
-					continue;
-				}
+        foreach ($nextKeys as $nextKey) {
+            foreach (getGroup($grid, $nextKey, $colKey) as $key => $cell) {
+                if (!is_array($cell) || !in_array($value, $cell)) {
+                    continue;
+                }
 
-				if (preg_match("/-$colKey$/", $key)) {
-					$removeValueFromKeys[] = $key;
-				}
-			}
-		}
-	}
+                if (preg_match("/-$colKey$/", $key)) {
+                    $removeValueFromKeys[] = $key;
+                }
+            }
+        }
+    }
 
-	if (count($removeValueFromKeys) && SEE_ALL) {
-		echo PHP_EOL . 'Remove ' . $value . ' from (col) keys:' . PHP_EOL;
-		print_r($removeValueFromKeys);
-	}
+    if (count($removeValueFromKeys) && SEE_ALL) {
+        echo PHP_EOL . 'Remove ' . $value . ' from (col) keys:' . PHP_EOL;
+        print_r($removeValueFromKeys);
+    }
 
-	return $removeValueFromKeys;
+    return $removeValueFromKeys;
 }
 
 function onlyOptionInGroup($value, $grid, $rowKey, $colKey)
